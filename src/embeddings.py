@@ -18,18 +18,21 @@ import numpy as np
 import torch.nn as nn
 import torch
 from gensim.models import KeyedVectors
+from arguments import parse_arguments
+
+args = parse_arguments()
 
 
 class Embedding(object):
-    def __init__(self, params, path='wiki-news-300d-1M.vec'):
+    def __init__(self, params, path=args.emb_f):
         self.path = path
         self.embedding_size = params.embedding_size
     
     def load_embeddings(self, t_words):
-        print("Loading pre-trained embeddings...")
+        print("\nLoading pre-trained embeddings...")
         if not os.path.exists(self.path):
             print("Embeddings not found")
-        self.word2vec = KeyedVectors.load_word2vec_format('wiki-news-300d-1M.vec')
+        self.word2vec = KeyedVectors.load_word2vec_format(self.path)
         len_words = len(t_words.word_index) + 1
         self.embedding_weights = np.zeros((len_words, self.embedding_size))
         word2id = t_words.word_index
@@ -44,8 +47,7 @@ class Embedding(object):
         return self.emb_layer
         
     def create_emb_layer(self, non_trainable=False):
-        print("Creating embedding layer...")
-        # import pdb pdb.set_trace()
+        print("\nCreating embedding layer...")
         self.num_embeddings, self.embedding_dim = self.embedding_weights.shape
         self.emb_layer = nn.Embedding(self.num_embeddings, self.embedding_size)
         self.emb_layer.load_state_dict({'weight': torch.Tensor(self.embedding_weights)})

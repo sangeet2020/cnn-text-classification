@@ -57,7 +57,6 @@ class DataLoader(object):
         self.X = pad_sequences(self.X, maxlen=self.max_seq_len, truncating='post')
     
     def split_data(self):
-            
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, shuffle=True, 
                                                                                 test_size=0.2, random_state=123) 
         self.X_train, self.X_validation, self.y_train, self.y_validation = train_test_split(self.X_train, self.y_train, 
